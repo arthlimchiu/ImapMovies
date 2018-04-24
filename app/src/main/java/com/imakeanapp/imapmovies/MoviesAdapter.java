@@ -8,14 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewHolder> {
 
+    private List<Genre> allGenres;
     private List<Movie> movies;
 
-    public MoviesAdapter(List<Movie> movies) {
+    public MoviesAdapter(List<Movie> movies, List<Genre> allGenres) {
         this.movies = movies;
+        this.allGenres = allGenres;
     }
 
     @Override
@@ -52,7 +55,20 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MovieViewH
             releaseDate.setText(movie.getReleaseDate().split("-")[0]);
             title.setText(movie.getTitle());
             rating.setText(String.valueOf(movie.getRating()));
-            genres.setText("");
+            genres.setText(getGenres(movie.getGenreIds()));
+        }
+
+        private String getGenres(List<Integer> genreIds) {
+            List<String> movieGenres = new ArrayList<>();
+            for (Integer genreId : genreIds) {
+                for (Genre genre : allGenres) {
+                    if (genre.getId() == genreId) {
+                        movieGenres.add(genre.getName());
+                        break;
+                    }
+                }
+            }
+            return TextUtils.join(", ", movieGenres);
         }
     }
 }

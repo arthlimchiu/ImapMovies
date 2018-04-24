@@ -71,4 +71,12 @@ public class Movie {
     public void setRating(double rating) {
         this.rating = rating;
     }
+
+    public List<Integer> getGenreIds() {
+        return genreIds;
+    }
+
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = genreIds;
+    }
 }
