@@ -2,6 +2,7 @@ package com.imakeanapp.imapmovies;
 
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -35,15 +36,16 @@ public class MoviesRepository {
         return repository;
     }
 
-    public void getMovies(final OnGetMoviesCallback callback) {
-        api.getPopularMovies(BuildConfig.TMDB_API_KEY, LANGUAGE, 1)
+    public void getMovies(int page, final OnGetMoviesCallback callback) {
+        Log.d("MoviesRepository", "Next Page = " + page);
+        api.getPopularMovies(BuildConfig.TMDB_API_KEY, LANGUAGE, page)
                 .enqueue(new Callback<MoviesResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<MoviesResponse> call, @NonNull Response<MoviesResponse> response) {
                         if (response.isSuccessful()) {
                             MoviesResponse moviesResponse = response.body();
                             if (moviesResponse != null && moviesResponse.getMovies() != null) {
-                                callback.onSuccess(moviesResponse.getMovies());
+                                callback.onSuccess(moviesResponse.getPage(), moviesResponse.getMovies());
                             } else {
                                 callback.onError();
                             }
