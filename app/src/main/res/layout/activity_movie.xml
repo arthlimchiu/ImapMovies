@@ -21,7 +21,7 @@
             app:contentScrim="@color/colorPrimary"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll|enterAlways">
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed">
 
             <ImageView
                 android:id="@+id/movieDetailsBackdrop"

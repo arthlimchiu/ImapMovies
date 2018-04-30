@@ -37,6 +37,7 @@ public class MovieActivity extends AppCompatActivity {
     private LinearLayout movieTrailers;
     private LinearLayout movieReviews;
     private TextView trailersLabel;
+    private TextView reviewsLabel;
 
     private MoviesRepository moviesRepository;
     private int movieId;
@@ -78,6 +79,7 @@ public class MovieActivity extends AppCompatActivity {
         movieTrailers = findViewById(R.id.movieTrailers);
         movieReviews = findViewById(R.id.movieReviews);
         trailersLabel = findViewById(R.id.trailersLabel);
+        reviewsLabel = findViewById(R.id.reviewsLabel);
     }
 
     private void getMovie() {
@@ -96,6 +98,7 @@ public class MovieActivity extends AppCompatActivity {
                         .apply(RequestOptions.placeholderOf(R.color.colorPrimary))
                         .into(movieBackdrop);
                 getTrailers(movie);
+                getReviews(movie);
             }
 
             @Override
@@ -141,10 +144,12 @@ public class MovieActivity extends AppCompatActivity {
                             showTrailer(String.format(YOUTUBE_VIDEO_URL, trailer.getKey()));
                         }
                     });
-                    Glide.with(MovieActivity.this)
-                            .load(String.format(YOUTUBE_THUMBNAIL_URL, trailer.getKey()))
-                            .apply(RequestOptions.placeholderOf(R.color.colorPrimary).centerCrop())
-                            .into(thumbnail);
+                    if (!isFinishing()) {
+                        Glide.with(MovieActivity.this)
+                                .load(String.format(YOUTUBE_THUMBNAIL_URL, trailer.getKey()))
+                                .apply(RequestOptions.placeholderOf(R.color.colorPrimary).centerCrop())
+                                .into(thumbnail);
+                    }
                     movieTrailers.addView(parent);
                 }
             }
@@ -160,6 +165,29 @@ public class MovieActivity extends AppCompatActivity {
     private void showTrailer(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(intent);
+    }
+
+    private void getReviews(Movie movie) {
+        moviesRepository.getReviews(movie.getId(), new OnGetReviewsCallback() {
+            @Override
+            public void onSuccess(List<Review> reviews) {
+                reviewsLabel.setVisibility(View.VISIBLE);
+                movieReviews.removeAllViews();
+                for (Review review : reviews) {
+                    View parent = getLayoutInflater().inflate(R.layout.review, movieReviews, false);
+                    TextView author = parent.findViewById(R.id.reviewAuthor);
+                    TextView content = parent.findViewById(R.id.reviewContent);
+                    author.setText(review.getAuthor());
+                    content.setText(review.getContent());
+                    movieReviews.addView(parent);
+                }
+            }
+
+            @Override
+            public void onError() {
+                // Do nothing
+            }
+        });
     }
 
     @Override

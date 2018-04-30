@@ -48,4 +48,11 @@ public interface TMDbApi {
             @Query("api_key") String apiKEy,
             @Query("language") String language
     );
+
+    @GET("movie/{movie_id}/reviews")
+    Call<ReviewResponse> getReviews(
+            @Path("movie_id") int id,
+            @Query("api_key") String apiKEy,
+            @Query("language") String language
+    );
 }

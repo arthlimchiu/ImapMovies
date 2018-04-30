@@ -147,4 +147,28 @@ public class MoviesRepository {
                     }
                 });
     }
+
+    public void getReviews(int movieId, final OnGetReviewsCallback callback) {
+        api.getReviews(movieId, BuildConfig.TMDB_API_KEY, LANGUAGE)
+                .enqueue(new Callback<ReviewResponse>() {
+                    @Override
+                    public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
+                        if (response.isSuccessful()) {
+                            ReviewResponse reviewResponse = response.body();
+                            if (reviewResponse != null && reviewResponse.getReviews() != null) {
+                                callback.onSuccess(reviewResponse.getReviews());
+                            } else {
+                                callback.onError();
+                            }
+                        } else {
+                            callback.onError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ReviewResponse> call, Throwable t) {
+                        callback.onError();
+                    }
+                });
+    }
 }
