@@ -1,11 +1,14 @@
 package com.imakeanapp.imapmovies;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
@@ -28,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         moviesRepository = MoviesRepository.getInstance();
 
@@ -127,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(int page, List<Movie> movies) {
                 if (adapter == null) {
-                    adapter = new MoviesAdapter(movies, movieGenres);
+                    adapter = new MoviesAdapter(movies, movieGenres, callback);
                     moviesList.setAdapter(adapter);
                 } else {
                     if (page == 1) {
@@ -137,6 +143,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 currentPage = page;
                 isFetchingMovies = false;
+
+                setTitle();
             }
 
             @Override
@@ -144,6 +152,29 @@ public class MainActivity extends AppCompatActivity {
                 showError();
             }
         });
+    }
+
+    OnMoviesClickCallback callback = new OnMoviesClickCallback() {
+        @Override
+        public void onClick(Movie movie) {
+            Intent intent = new Intent(MainActivity.this, MovieActivity.class);
+            intent.putExtra(MovieActivity.MOVIE_ID, movie.getId());
+            startActivity(intent);
+        }
+    };
+
+    private void setTitle() {
+        switch (sortBy) {
+            case MoviesRepository.POPULAR:
+                setTitle(getString(R.string.popular));
+                break;
+            case MoviesRepository.TOP_RATED:
+                setTitle(getString(R.string.top_rated));
+                break;
+            case MoviesRepository.UPCOMING:
+                setTitle(getString(R.string.upcoming));
+                break;
+        }
     }
 
     private void showError() {
