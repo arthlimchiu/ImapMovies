@@ -123,4 +123,28 @@ public class MoviesRepository {
                     }
                 });
     }
+
+    public void getTrailers(int movieId, final OnGetTrailersCallback callback) {
+        api.getTrailers(movieId, BuildConfig.TMDB_API_KEY, LANGUAGE)
+                .enqueue(new Callback<TrailerResponse>() {
+                    @Override
+                    public void onResponse(Call<TrailerResponse> call, Response<TrailerResponse> response) {
+                        if (response.isSuccessful()) {
+                            TrailerResponse trailerResponse = response.body();
+                            if (trailerResponse != null && trailerResponse.getTrailers() != null) {
+                                callback.onSuccess(trailerResponse.getTrailers());
+                            } else {
+                                callback.onError();
+                            }
+                        } else {
+                            callback.onError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<TrailerResponse> call, Throwable t) {
+                        callback.onError();
+                    }
+                });
+    }
 }
