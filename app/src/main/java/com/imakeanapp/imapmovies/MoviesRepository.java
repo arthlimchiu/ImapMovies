@@ -99,4 +99,28 @@ public class MoviesRepository {
                     }
                 });
     }
+
+    public void getMovie(int movieId, final OnGetMovieCallback callback) {
+        api.getMovie(movieId, BuildConfig.TMDB_API_KEY, LANGUAGE)
+                .enqueue(new Callback<Movie>() {
+                    @Override
+                    public void onResponse(Call<Movie> call, Response<Movie> response) {
+                        if (response.isSuccessful()) {
+                            Movie movie = response.body();
+                            if (movie != null) {
+                                callback.onSuccess(movie);
+                            } else {
+                                callback.onError();
+                            }
+                        } else {
+                            callback.onError();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Movie> call, Throwable t) {
+                        callback.onError();
+                    }
+                });
+    }
 }
