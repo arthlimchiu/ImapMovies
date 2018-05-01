@@ -2,8 +2,8 @@ package com.imakeanapp.imapmovies;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -23,7 +23,7 @@ public class MovieActivity extends AppCompatActivity {
 
     public static String MOVIE_ID = "movie_id";
 
-    private static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w600";
+    private static String IMAGE_BASE_URL = "http://image.tmdb.org/t/p/w780";
     private static String YOUTUBE_VIDEO_URL = "http://www.youtube.com/watch?v=%s";
     private static String YOUTUBE_THUMBNAIL_URL = "http://img.youtube.com/vi/%s/0.jpg";
 
